@@ -1,0 +1,14 @@
+﻿<EditForm Model="@fileModel" OnValidSubmit="CompressFile">
+	<div class="row">
+		<label>File Path:</label>
+		<InputFile></InputFile>
+	</div>
+</EditForm>
+
+@code {
+	private FileModel fileModel = new();
+	private void CompressFile(EditContext args)
+	{
+		throw new NotImplementedException();
+	}
+}
