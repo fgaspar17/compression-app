@@ -1,14 +1,37 @@
-﻿<EditForm Model="@fileModel" OnValidSubmit="CompressFile">
-	<div class="row">
-		<label>File Path:</label>
-		<InputFile></InputFile>
-	</div>
-</EditForm>
+﻿@inject IFilePickerService FilePicker
+@inject IFileSaverService FileSaver
+
+<label>Pick File: @fileModel?.SourceFilePath</label>
+<button @onclick="PickFileAsync">Pick File</button>
+
+<label>Compress To: @fileModel?.DestinationFilePath</label>
+<button @onclick="SaveFileAsync">Compress File</button>
 
 @code {
 	private FileModel fileModel = new();
+	private CancellationTokenSource _cts;
+
 	private void CompressFile(EditContext args)
 	{
 		throw new NotImplementedException();
+	}
+
+	private async Task PickFileAsync()
+	{
+		_cts?.Cancel();
+		_cts = new CancellationTokenSource();
+		fileModel.SourceFilePath = await FilePicker.PickFileAsync(_cts.Token);
+	}
+
+	private async Task SaveFileAsync()
+	{
+		_cts?.Cancel();
+		_cts = new CancellationTokenSource();
+		GzipCompressionService gzip = new();
+		fileModel.DestinationFilePath = await FileSaver.SaveFileAsync(
+			Path.GetFileNameWithoutExtension(fileModel.SourceFilePath) + ".gz", 
+			Path.GetDirectoryName(fileModel.SourceFilePath), 
+			await gzip.GetCompressionStreamAsync(fileModel.SourceFilePath), 
+			_cts.Token);
 	}
 }

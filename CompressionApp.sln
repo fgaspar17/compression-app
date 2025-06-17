@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompressionApp.UILibrary", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompressionApp.Application", "CompressionApp.Application\CompressionApp.Application.csproj", "{D6C2D36B-76E7-4368-921B-07E87A420F55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCompression", "TestCompression\TestCompression.csproj", "{35F0105A-5213-4BC0-906B-F9C0AD75DC50}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,10 +28,6 @@ Global
 		{D6C2D36B-76E7-4368-921B-07E87A420F55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6C2D36B-76E7-4368-921B-07E87A420F55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6C2D36B-76E7-4368-921B-07E87A420F55}.Release|Any CPU.Build.0 = Release|Any CPU
-		{35F0105A-5213-4BC0-906B-F9C0AD75DC50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{35F0105A-5213-4BC0-906B-F9C0AD75DC50}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{35F0105A-5213-4BC0-906B-F9C0AD75DC50}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{35F0105A-5213-4BC0-906B-F9C0AD75DC50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
