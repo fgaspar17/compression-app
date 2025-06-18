@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CompressionApp.Application\CompressionApp.Application.csproj" />
+    <ProjectReference Include="..\CompressionApp.Application\CompressionApp.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,20 +1,16 @@
 ﻿using System.IO.Compression;
 
-namespace CompressionApp.App;
+namespace CompressionApp.Domain;
 
 public class GzipCompressionService
 {
-    public async Task<Stream> GetCompressionStreamAsync(string filePath)
+    public async Task GetCompressionStreamAsync(string filePathOrigin, string filePathDestination, CancellationToken ct)
     {
-        var memoryStream = new MemoryStream();
-
-        await using (var fileStream = File.OpenRead(filePath))
-        await using (var gzipStream = new GZipStream(memoryStream, CompressionLevel.Optimal, leaveOpen: true))
+        await using (var fileStreamOrigin = File.OpenRead(filePathOrigin))
+        await using (var fileStreamDestination = File.OpenWrite(filePathDestination))
+        await using (var gzipStream = new GZipStream(fileStreamDestination, CompressionLevel.Optimal, leaveOpen: true))
         {
-            await fileStream.CopyToAsync(gzipStream);
+            await fileStreamOrigin.CopyToAsync(gzipStream, ct);
         }
-
-        memoryStream.Position = 0; // Important to reset position
-        return memoryStream;
     }
 }

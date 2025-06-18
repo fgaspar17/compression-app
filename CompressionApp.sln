@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompressionApp.UI", "Compre
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompressionApp.UILibrary", "CompressionApp.UILibrary\CompressionApp.UILibrary.csproj", "{62A99D83-78E4-474F-9E39-49A5F5936421}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompressionApp.Application", "CompressionApp.Application\CompressionApp.Application.csproj", "{D6C2D36B-76E7-4368-921B-07E87A420F55}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompressionApp.Domain", "CompressionApp.Application\CompressionApp.Domain.csproj", "{D6C2D36B-76E7-4368-921B-07E87A420F55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

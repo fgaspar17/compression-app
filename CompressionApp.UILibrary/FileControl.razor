@@ -1,7 +1,11 @@
 ﻿@inject IFilePickerService FilePicker
 @inject IFileSaverService FileSaver
 
-<label>Pick File: @fileModel?.SourceFilePath</label>
+<label>
+	Pick File/s: @fileModel?.SourceFilePath
+</label>
+
+
 <button @onclick="PickFileAsync">Pick File</button>
 
 <label>Compress To: @fileModel?.DestinationFilePath</label>
@@ -9,29 +13,32 @@
 
 @code {
 	private FileModel fileModel = new();
-	private CancellationTokenSource _cts;
+	private CancellationTokenSource? _cts;
 
-	private void CompressFile(EditContext args)
-	{
-		throw new NotImplementedException();
-	}
 
 	private async Task PickFileAsync()
 	{
 		_cts?.Cancel();
 		_cts = new CancellationTokenSource();
-		fileModel.SourceFilePath = await FilePicker.PickFileAsync(_cts.Token);
+		fileModel.SourceFilePath = await FilePicker.PickFileAsync("Files to Compress", _cts.Token);
 	}
 
 	private async Task SaveFileAsync()
 	{
 		_cts?.Cancel();
 		_cts = new CancellationTokenSource();
+
+		var tempCompressPath = Path.Combine(Path.GetTempPath(), "compressed.gz");
+
 		GzipCompressionService gzip = new();
+		 await gzip.GetCompressionStreamAsync(fileModel.SourceFilePath, tempCompressPath, _cts.Token);
+
+		using var tempFileStream = File.OpenRead(tempCompressPath);
+
 		fileModel.DestinationFilePath = await FileSaver.SaveFileAsync(
 			Path.GetFileNameWithoutExtension(fileModel.SourceFilePath) + ".gz", 
 			Path.GetDirectoryName(fileModel.SourceFilePath), 
-			await gzip.GetCompressionStreamAsync(fileModel.SourceFilePath), 
+			tempFileStream, 
 			_cts.Token);
 	}
 }

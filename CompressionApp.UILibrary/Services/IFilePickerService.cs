@@ -2,5 +2,6 @@
 
 public interface IFilePickerService
 {
-    Task<string?> PickFileAsync(CancellationToken ct);
+    Task<string?> PickFileAsync(string title, CancellationToken ct);
+    Task<IEnumerable<string>> PickMultipleFilesAsync(string title, CancellationToken ct);
 }
