@@ -22,6 +22,7 @@ namespace CompressionApp
             builder.Services.AddMauiBlazorWebView();
             builder.Services.AddSingleton<IFilePickerService, FilePickerService>();
             builder.Services.AddSingleton<IFileSaverService, FileSaverService>();
+            builder.Services.AddSingleton<IFolderPickerService, FolderPickerService>();
 
 #if DEBUG
     		builder.Services.AddBlazorWebViewDeveloperTools();
