@@ -1,18 +1,16 @@
-﻿@inject IFilePickerService FilePicker
-@inject IFileSaverService FileSaver
+﻿@inject IFileSaverService FileSaver
 @inject IFolderPickerService FolderPicker
 
 <label>
 	Pick File/s:
 </label>
 
+<InputFile OnChange="@LoadFiles" accept="*.*" multiple />
+
 	@foreach (var filePath in fileModel.SourceFilesPath)
 	{
 		<label>@filePath</label>	
 	}
-
-
-<button @onclick="PickFileAsync">Pick File</button>
 
 <label>Compress To: @fileModel?.DestinationFilePath</label>
 <button @onclick="CompressFileAsync">Compress File</button>
@@ -30,11 +28,10 @@
 	}
 
 
-	private async Task PickFileAsync()
+	private void LoadFiles(InputFileChangeEventArgs e)
 	{
-		_cts?.Cancel();
-		_cts = new CancellationTokenSource();
-		fileModel.SourceFilesPath = await FilePicker.PickMultipleFilesAsync("Files to Compress", _cts.Token);
+		fileModel.SourceFilesPath = e.GetMultipleFiles().Select(f => f.Name);
+		fileModel.SourceStreams = e.GetMultipleFiles().Select(f => f.OpenReadStream());
 	}
 
 	private async Task CompressFileAsync()
@@ -45,9 +42,10 @@
 		if (fileModel.SourceFilesPath.Count() == 1)
 		{
 			var filePath = fileModel.SourceFilesPath.First();
+			var originStream = fileModel.SourceStreams.First();
 			var tempCompressPath = Path.Combine(Path.GetTempPath(), "compressed.gz");
 			GzipCompressionService gzip = new();
-			await gzip.CompressFileAsync(filePath, tempCompressPath, _cts.Token);
+			await gzip.CompressFileAsync(originStream, tempCompressPath, _cts.Token);
 
 			using var tempFileStream = File.OpenRead(tempCompressPath);
 
@@ -62,8 +60,8 @@
 			var filePath = fileModel.SourceFilesPath.First();
 			var tempCompressPath = Path.Combine(Path.GetTempPath(), "compressed.zip");
 			ZipCompressionService zip = new();
-			zip.CompressFiles(
-			fileModel.SourceFilesPath.ToArray(),
+			await zip.CompressFiles(
+			fileModel.SourceFilesPath.Zip(fileModel.SourceStreams, (string, Stream) (f, s) => new (f, s)).ToArray(),
 			tempCompressPath);
 
 			using var tempFileStream = File.OpenRead(tempCompressPath);
@@ -84,12 +82,17 @@
 		fileModel.DestinationFilePath = await FolderPicker.PickFolderAsync(_cts.Token);
 
 		GzipDecompressionService gzipDecompressionService = new();
+		ZipDecompressionService zipDecompressionService = new();
 
 		foreach (var filePath in fileModel.SourceFilesPath)
 		{
 			if (Path.GetExtension(filePath) == ".gz")
 			{
 				await gzipDecompressionService.DecompressFileAsync(filePath, Path.Combine(fileModel.DestinationFilePath, Path.GetFileName(filePath).TrimEnd('.', 'g', 'z')), _cts.Token);
+			}
+			else if (Path.GetExtension(filePath) == ".zip")
+			{
+				zipDecompressionService.DecompressFiles(filePath, fileModel.DestinationFilePath);
 			}
 		}
 	}

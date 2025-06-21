@@ -13,4 +13,13 @@ public class GzipCompressionService
             await fileStreamOrigin.CopyToAsync(gzipStream, ct);
         }
     }
+
+    public async Task CompressFileAsync(Stream originStream, string filePathDestination, CancellationToken ct)
+    {
+        await using (var fileStreamDestination = File.OpenWrite(filePathDestination))
+        await using (var gzipStream = new GZipStream(fileStreamDestination, CompressionLevel.Optimal))
+        {
+            await originStream.CopyToAsync(gzipStream, ct);
+        }
+    }
 }
