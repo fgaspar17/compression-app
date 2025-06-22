@@ -1,4 +1,5 @@
-﻿using System.IO.Compression;
+﻿using System.Diagnostics;
+using System.IO.Compression;
 
 namespace CompressionApp.Domain;
 
@@ -6,7 +7,15 @@ public class ZipDecompressionService
 {
     public void DecompressFiles(string filePathOrigin, string folderPathDestination)
     {
-        var archive = ZipFile.OpenRead(filePathOrigin);
+        using var archive = ZipFile.OpenRead(filePathOrigin);
         archive.ExtractToDirectory(folderPathDestination);
+    }
+
+    public async Task DecompressFilesAsync(Stream originStream, string folderPathDestination)
+    {
+        // Copy in a MemoryStream, because the Zip library doesn't support async operations
+        var ms = new MemoryStream();
+        await originStream.CopyToAsync(ms);
+        ZipFile.ExtractToDirectory(ms, folderPathDestination);
     }
 }

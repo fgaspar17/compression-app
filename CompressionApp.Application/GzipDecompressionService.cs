@@ -18,4 +18,13 @@ public class GzipDecompressionService
             await gzipStream.CopyToAsync(fileStreamDestination, ct);
         }
     }
+
+    public async Task DecompressFileFromStreamAsync(Stream originStream, string filePathDestination, CancellationToken ct)
+    {
+        await using (var fileStreamDestination = File.OpenWrite(filePathDestination))
+        await using (var gzipStream = new GZipStream(originStream, CompressionMode.Decompress))
+        {
+            await gzipStream.CopyToAsync(fileStreamDestination, ct);
+        }
+    }
 }
