@@ -11,11 +11,11 @@ public class ZipDecompressionService
         archive.ExtractToDirectory(folderPathDestination);
     }
 
-    public async Task DecompressFilesAsync(Stream originStream, string folderPathDestination)
+    public async Task DecompressFilesAsync(Stream originStream, string folderPathDestination, CancellationToken ct)
     {
-        // Copy in a MemoryStream, because the Zip library doesn't support async operations
+        // Copy to a MemoryStream, because the Zip library doesn't support async operations
         var ms = new MemoryStream();
-        await originStream.CopyToAsync(ms);
+        await originStream.CopyToAsync(ms, ct);
         ZipFile.ExtractToDirectory(ms, folderPathDestination);
     }
 }

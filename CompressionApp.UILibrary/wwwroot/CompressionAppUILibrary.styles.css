@@ -1,0 +1,41 @@
+﻿body {
+    min-height: 100vh;
+    max-width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5vmax;
+    box-sizing: border-box;
+}
+
+input[type="file"]::file-selector-button {
+    height: 7vh;
+    color: #52357B;
+    background-color: #B2D8CE;
+    border-color: #648DB3;
+    border-radius: 10px
+}
+
+input[type="file"]::file-selector-button:hover {
+    cursor: pointer;
+    color: dodgerblue;
+}
+
+input[type="file"]::target-text {
+    color: #333446
+}
+
+.file-upload-section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}

@@ -23,6 +23,7 @@ namespace CompressionApp
             builder.Services.AddSingleton<IFilePickerService, FilePickerService>();
             builder.Services.AddSingleton<IFileSaverService, FileSaverService>();
             builder.Services.AddSingleton<IFolderPickerService, FolderPickerService>();
+            builder.Services.AddSingleton<IFileCompressService, FilesCompressService>();
 
 #if DEBUG
     		builder.Services.AddBlazorWebViewDeveloperTools();
