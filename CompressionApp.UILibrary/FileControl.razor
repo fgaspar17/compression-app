@@ -1,5 +1,5 @@
 ﻿@inject IFileCompressService FileCompresser
-@inject IFolderPickerService FolderPicker
+@inject IFileDecompressService FileDecompresser
 
 <div class="file-upload-section">
 	<InputFile OnChange="@LoadFiles" accept="*.*" multiple />
@@ -52,24 +52,8 @@
 		_cts?.Cancel();
 		_cts = new CancellationTokenSource();
 
-		FileDestination.DestinationFolder = await FolderPicker.PickFolderAsync(_cts.Token);
-
-		GzipDecompressionService gzipDecompressionService = new();
-		ZipDecompressionService zipDecompressionService = new();
-
-		foreach (var file in FilesPicked)
-		{
-			if (Path.GetExtension(file.SourceFilename) == ".gz")
-			{
-				await gzipDecompressionService.DecompressFileFromStreamAsync(file.SourceStream, 
-					Path.Combine(FileDestination.DestinationFolder, file.SourceFilename.TrimEnd('.', 'g', 'z')), 
-					_cts.Token);
-			}
-			else if (Path.GetExtension(file.SourceFilename) == ".zip")
-			{
-				await zipDecompressionService.DecompressFilesAsync(file.SourceStream, FileDestination.DestinationFolder
-				, _cts.Token);
-			}
-		}
+		FileDestination.DestinationFolder = await FileDecompresser.DecompressFiles(
+			FilesPicked.Select(f => (f.SourceFilename, f.SourceStream)),
+			_cts.Token);
 	}
 }
