@@ -1,6 +1,14 @@
 ﻿@inject IFileCompressService FileCompresser
 @inject IFileDecompressService FileDecompresser
 
+@if (!string.IsNullOrWhiteSpace(_errorMessage))
+{
+	<div class="error-container">
+		<h1 class="error-title">Error:</h1>
+		<p>@_errorMessage</p>
+	</div>
+}
+
 @if (FilesPicked.Count() > 0)
 {
 	<ul class="file-card-list">
@@ -30,6 +38,7 @@
 	private IEnumerable<FileSourceModel> FilesPicked { get; set; }
 	private FileDestinationModel FileDestination { get; set; }
 	private CancellationTokenSource? _cts;
+	private string _errorMessage = string.Empty;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -40,6 +49,21 @@
 
 	private void LoadFiles(InputFileChangeEventArgs e)
 	{
+		var filesSelected = e.GetMultipleFiles();
+		FileValidator validator = new();
+		var validation = validator.ValidateFiles(
+			filesSelected.Select(f => (f.Name, f.Size)).ToArray()
+		);
+
+		if (!validation.result)
+		{
+			FilesPicked = Enumerable.Empty<FileSourceModel>();
+			_errorMessage = validation.errorMessage;
+			return;
+		}
+
+		_errorMessage = string.Empty;
+
 		FilesPicked = e.GetMultipleFiles().Select(f => new FileSourceModel
 			{
 				SourceFilename = f.Name,
@@ -51,6 +75,7 @@
 	{
 		_cts?.Cancel();
 		_cts = new CancellationTokenSource();
+
 
 		FileDestination.DestinationFilename = await FileCompresser.CompressFiles(
 			FilesPicked.Select(f => (f.SourceFilename, f.SourceStream)), 
