@@ -1,18 +1,28 @@
 ﻿@inject IFileCompressService FileCompresser
 @inject IFileDecompressService FileDecompresser
 
-<div class="file-upload-section">
-	<InputFile OnChange="@LoadFiles" accept="*.*" multiple />
+@if (FilesPicked.Count() > 0)
+{
+	<ul class="file-card-list">
+		@foreach (var file in FilesPicked)
+		{
+			<li class="file-card">
+				<p>@file.SourceFilename</p>
+			</li>
+		}
+	</ul>
+}
 
-	@foreach (var filePicked in FilesPicked)
-	{
-		<label>@filePicked.SourceFilename</label>
-	}
+<div class="file-upload-section">
+	<label for="file-upload" class="custom-file-upload">
+		Upload Files
+	</label>
+	<InputFile OnChange="@LoadFiles" id="file-upload" accept="*.*" multiple />
 </div>
 
 <div class="action-buttons">
-	<button @onclick="CompressFileAsync">Compress File</button>
-	<button @onclick="DecompressFileAsync">Decompress File</button>
+	<button class="compress-button" @onclick="CompressFileAsync">Compress</button>
+	<button class="decompress-button" @onclick="DecompressFileAsync">Decompress</button>
 </div>
 
 
