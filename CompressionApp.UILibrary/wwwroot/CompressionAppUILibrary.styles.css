@@ -111,3 +111,20 @@ input[type="file"] {
 .error-title {
     color: red;
 }
+
+.remove-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+    cursor: pointer;
+    font-weight: bold;
+    line-height: 1rem;
+    padding: 0;
+}
+
+    .remove-btn:hover {
+        background-color: #c82333;
+    }

@@ -15,7 +15,8 @@
 		@foreach (var file in FilesPicked)
 		{
 			<li class="file-card">
-				<p>@file.SourceFilename</p>
+				<span>@file.SourceFilename</span>
+				<button class="remove-btn" @onclick="() => RemoveFile(file)">X</button>
 			</li>
 		}
 	</ul>
@@ -35,14 +36,14 @@
 
 
 @code {
-	private IEnumerable<FileSourceModel> FilesPicked { get; set; }
+	private List<FileSourceModel> FilesPicked { get; set; }
 	private FileDestinationModel FileDestination { get; set; }
 	private CancellationTokenSource? _cts;
 	private string _errorMessage = string.Empty;
 
 	protected override async Task OnInitializedAsync()
 	{
-		FilesPicked ??= Enumerable.Empty<FileSourceModel>();
+		FilesPicked ??= new();
 		FileDestination ??= new();
 	}
 
@@ -57,7 +58,7 @@
 
 		if (!validation.result)
 		{
-			FilesPicked = Enumerable.Empty<FileSourceModel>();
+			FilesPicked = new();
 			_errorMessage = validation.errorMessage;
 			return;
 		}
@@ -68,7 +69,7 @@
 			{
 				SourceFilename = f.Name,
 				SourceStream = f.OpenReadStream()
-			});
+			}).ToList();
 	}
 
 	private async Task CompressFileAsync()
@@ -77,9 +78,12 @@
 		_cts = new CancellationTokenSource();
 
 
-		FileDestination.DestinationFilename = await FileCompresser.CompressFiles(
-			FilesPicked.Select(f => (f.SourceFilename, f.SourceStream)), 
-			_cts.Token);
+		if (FilesPicked.Count() > 0)
+		{
+			FileDestination.DestinationFilename = await FileCompresser.CompressFiles(
+				FilesPicked.Select(f => (f.SourceFilename, f.SourceStream)),
+				_cts.Token);
+		}
 	}
 
 	private async Task DecompressFileAsync()
@@ -87,8 +91,16 @@
 		_cts?.Cancel();
 		_cts = new CancellationTokenSource();
 
-		FileDestination.DestinationFolder = await FileDecompresser.DecompressFiles(
-			FilesPicked.Select(f => (f.SourceFilename, f.SourceStream)),
-			_cts.Token);
+		if (FilesPicked.Count() > 0)
+		{
+			FileDestination.DestinationFolder = await FileDecompresser.DecompressFiles(
+				FilesPicked.Select(f => (f.SourceFilename, f.SourceStream)),
+				_cts.Token);
+		}
+	}
+
+	private void RemoveFile(FileSourceModel file)
+	{
+		FilesPicked.Remove(file);
 	}
 }
