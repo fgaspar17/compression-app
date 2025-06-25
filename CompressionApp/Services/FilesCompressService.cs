@@ -1,5 +1,6 @@
-﻿using CompressionApp.Domain;
-using CompressionApp.UILibrary.Services;
+﻿using CompressionApp.UILibrary.Services;
+using CompressionApp.Domain.Services;
+using CompressionApp.Domain.Streams;
 
 namespace CompressionApp.Services;
 
@@ -17,7 +18,14 @@ public class FilesCompressService : IFileCompressService
         if (filesPicked.Count() == 1)
         {
             var filePicked = filesPicked.First();
-            var originStream = filePicked.stream;
+
+            var progressBar = new ProgressPopupPage();
+            await Application.Current.MainPage.Navigation.PushModalAsync(progressBar);
+            
+            var originStream = new ReadProgressStream(filePicked.stream, progressBar.UpdateProgress);
+            
+            await Application.Current.MainPage.Navigation.PopModalAsync();
+            
             var tempCompressPath = Path.Combine(Path.GetTempPath(), "compressed.gz");
             GzipCompressionService gzip = new();
             await gzip.CompressFileAsync(originStream, tempCompressPath, ct);

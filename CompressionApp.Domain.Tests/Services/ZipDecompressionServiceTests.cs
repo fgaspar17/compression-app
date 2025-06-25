@@ -1,6 +1,7 @@
 ﻿using System.IO.Compression;
+using CompressionApp.Domain.Services;
 
-namespace CompressionApp.Domain.Tests;
+namespace CompressionApp.Domain.Tests.Services;
 
 public class ZipDecompressionServiceTests
 {

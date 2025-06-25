@@ -1,4 +1,5 @@
-﻿using CompressionApp.Domain;
+﻿using CompressionApp.Domain.Services;
+using CompressionApp.Domain.Streams;
 using CompressionApp.UILibrary.Services;
 
 namespace CompressionApp.Services;
@@ -22,9 +23,13 @@ public class FilesDecompressService : IFileDecompressService
         {
             if (Path.GetExtension(file.filename) == ".gz")
             {
-                await gzipDecompressionService.DecompressFileFromStreamAsync(file.stream,
+                var progressBar = new ProgressPopupPage();
+                var originStream = new ReadProgressStream(file.stream, progressBar.UpdateProgress);
+                await Application.Current.MainPage.Navigation.PushModalAsync(progressBar);
+                await gzipDecompressionService.DecompressFileFromStreamAsync(originStream,
                     Path.Combine(destinationFolder, file.filename.TrimEnd('.', 'g', 'z')),
                     ct);
+                await Application.Current.MainPage.Navigation.PopModalAsync();
             }
             else if (Path.GetExtension(file.filename) == ".zip")
             {

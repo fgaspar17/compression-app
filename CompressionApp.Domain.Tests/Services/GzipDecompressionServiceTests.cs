@@ -1,4 +1,4 @@
-﻿namespace CompressionApp.Domain.Tests;
+﻿namespace CompressionApp.Domain.Tests.Services;
 
 public class GzipDecompressionServiceTests
 {

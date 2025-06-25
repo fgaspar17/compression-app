@@ -1,6 +1,6 @@
 ﻿using System.IO.Compression;
 
-namespace CompressionApp.Domain;
+namespace CompressionApp.Domain.Services;
 
 public class GzipDecompressionService
 {

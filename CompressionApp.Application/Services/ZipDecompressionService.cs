@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO.Compression;
 
-namespace CompressionApp.Domain;
+namespace CompressionApp.Domain.Services;
 
 public class ZipDecompressionService
 {
